@@ -758,18 +758,18 @@ uint16_t coapServer::send(IPAddress ip, int port, char *url, COAP_TYPE type, COA
 
 	 if(method!=COAP_EMPTY){
 
-		// Adding COAP_CONTENT_TYPE into options for POST request.
-		if(method == COAP_POST){
-			char optionBuffer[2];
-			char optionBuffer_1[2];
-			optionBuffer[0] = ((uint16_t)COAP_APPLICATION_LINK_FORMAT & 0xFF00) >> 8;
-			optionBuffer[1] = ((uint16_t)COAP_APPLICATION_LINK_FORMAT & 0x00FF) ;
+		// // Adding COAP_CONTENT_TYPE into options for POST request.
+		// if(packet.code_() == COAP_POST){
+		// 	char optionBuffer[2];
+		// 	char optionBuffer_1[2];
+		// 	optionBuffer[0] = ((uint16_t)COAP_APPLICATION_LINK_FORMAT & 0xFF00) >> 8;
+		// 	optionBuffer[1] = ((uint16_t)COAP_APPLICATION_LINK_FORMAT & 0x00FF) ;
 
-			packet.options[packet.optionnum].buffer = (uint8_t *)optionBuffer;
-			packet.options[packet.optionnum].length = 1;
-			packet.options[packet.optionnum].number = COAP_CONTENT_FORMAT;
-			packet.optionnum++;
-		}
+		// 	packet.options[packet.optionnum].buffer = (uint8_t *)optionBuffer;
+		// 	packet.options[packet.optionnum].length = 1;
+		// 	packet.options[packet.optionnum].number = COAP_CONTENT_FORMAT;
+		// 	packet.optionnum++;
+		// }
 
 		// Decomposing URIs into Options
 		char* copy_url;
@@ -778,6 +778,8 @@ uint16_t coapServer::send(IPAddress ip, int port, char *url, COAP_TYPE type, COA
 		char *last_sub_url;
     	char *sub_last_sub_url; 
     	char *delim_q = "?";  //uri-query deliminiter
+		char ct[1];
+		ct[0]= char(COAP_APPLICATION_LINK_FORMAT);
 
 		copy_url = (char*) malloc(strlen(url)+1);
    		strcpy(copy_url,url);
@@ -787,6 +789,18 @@ uint16_t coapServer::send(IPAddress ip, int port, char *url, COAP_TYPE type, COA
 		packet.options[packet.optionnum].length = strlen(sub_url);
 		packet.options[packet.optionnum].number = COAP_URI_PATH;
 		packet.optionnum++;
+
+		 
+
+		// Adding COAP_CONTENT_TYPE into options for POST request.
+		if(packet.code_() == COAP_POST){		
+			packet.options[packet.optionnum].buffer = (uint8_t*)ct;
+			packet.options[packet.optionnum].length = 1;
+			packet.options[packet.optionnum].number = COAP_CONTENT_FORMAT;
+			packet.optionnum++;
+		}
+
+
 		while(sub_url != NULL){
 			sub_url = strtok(NULL, delim_p);
 			if(sub_url != NULL){
