@@ -72,6 +72,7 @@ void loop() {
     //get request
     int msgid = coap.get(ip,port,"/.well-known/core?rt=core.rd");
     //int msgid = coap.get(ip,port,"/.well-known/core");
+    //int msgid = coap.get(ip,port,"rd-lookup/res?rt=light");
 
     //put request 
     //arguments server ip address,default port,resource name, payload,payloadlength
